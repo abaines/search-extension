@@ -8,6 +8,15 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem('searchWords', wordsTextarea.value);
       }
 
+      function sendWordsToContentScript(wordsRaw) {
+            chrome.tabs && chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                  if (tabs[0] && tabs[0].id) {
+                        chrome.tabs.sendMessage(tabs[0].id, { type: 'HIGHLIGHT_WORDS', wordsRaw });
+                  }
+            });
+            console.log('Words to search (raw):\n' + wordsRaw);
+      }
+
       // Restore saved words
       const saved = localStorage.getItem('searchWords');
       if (saved) {
@@ -17,13 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
       searchBtn.addEventListener('click', function () {
             const wordsRaw = wordsTextarea.value;
             saveWords();
-            // Send raw words string to content script for highlighting
-            chrome.tabs && chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                  if (tabs[0] && tabs[0].id) {
-                        chrome.tabs.sendMessage(tabs[0].id, { type: 'HIGHLIGHT_WORDS', wordsRaw });
-                  }
-            });
-            console.log('Words to search (raw):\n' + wordsRaw);
+            sendWordsToContentScript(wordsRaw);
       });
 
       // Save words on every input for reliability
