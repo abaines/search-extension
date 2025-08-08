@@ -3,9 +3,14 @@
 document.addEventListener('DOMContentLoaded', function () {
       const searchBtn = document.getElementById('searchBtn');
       const wordsTextarea = document.getElementById('words');
+      const autoApplyCheckbox = document.getElementById('autoApplyCheckbox');
 
       function saveWords() {
             localStorage.setItem('searchWords', wordsTextarea.value);
+      }
+
+      function saveAutoApplyState() {
+            localStorage.setItem('autoApply', autoApplyCheckbox.checked ? '1' : '0');
       }
 
       function sendWordsToContentScript(wordsRaw) {
@@ -23,6 +28,14 @@ document.addEventListener('DOMContentLoaded', function () {
             wordsTextarea.value = saved;
       }
 
+      // Restore checkbox state
+      const autoApplySaved = localStorage.getItem('autoApply');
+      if (autoApplySaved === '1') {
+            autoApplyCheckbox.checked = true;
+      } else {
+            autoApplyCheckbox.checked = false;
+      }
+
       searchBtn.addEventListener('click', function () {
             const wordsRaw = wordsTextarea.value;
             saveWords();
@@ -31,4 +44,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Save words on every input for reliability
       wordsTextarea.addEventListener('input', saveWords);
+
+      // Save checkbox state on change
+      autoApplyCheckbox.addEventListener('change', saveAutoApplyState);
+
+      // Listen for tab/window focus and auto-apply if checked
+      chrome.tabs && chrome.tabs.onActivated && chrome.tabs.onActivated.addListener(function () {
+            if (autoApplyCheckbox.checked) {
+                  const wordsRaw = wordsTextarea.value;
+                  sendWordsToContentScript(wordsRaw);
+            }
+      });
+      chrome.windows && chrome.windows.onFocusChanged && chrome.windows.onFocusChanged.addListener(function () {
+            if (autoApplyCheckbox.checked) {
+                  const wordsRaw = wordsTextarea.value;
+                  sendWordsToContentScript(wordsRaw);
+            }
+      });
 });
