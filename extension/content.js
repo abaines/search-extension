@@ -69,13 +69,14 @@
             console.log(`🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`);
       }
 
-      // Listen for messages from the popup
-      chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+      function handleHighlightWordsMessage(msg, sender, sendResponse) {
             if (msg.type === 'HIGHLIGHT_WORDS' && typeof msg.wordsRaw === 'string') {
                   const words = msg.wordsRaw.split('\n').map(w => w.trim()).filter(Boolean);
                   highlightKeywords(words);
             }
-      });
+      }
+
+      chrome.runtime.onMessage.addListener(handleHighlightWordsMessage);
 
 
       // Auto-apply logic: run highlight if enabled in chrome.storage
