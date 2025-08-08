@@ -1,0 +1,20 @@
+<svg width="128" height="128" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!--
+      Magnifying Glass Icon for Chrome Extension
+      - Source: Vector (SVG) for scalability and maintainability.
+      - Style: Flat, modern, with a pop of orange.
+      - Principle: A single, well-structured source asset is better than multiple raster images.
+    -->
+
+    <!-- Lens Frame -->
+    <circle cx="42" cy="42" r="30" stroke="#374151" stroke-width="12"/>
+
+    <!-- Lens Glass -->
+    <circle cx="42" cy="42" r="24" fill="white"/>
+
+    <!-- Neck -->
+    <line x1="67" y1="67" x2="72" y2="72" stroke="#374151" stroke-width="12" stroke-linecap="round"/>
+
+    <!-- Handle -->
+    <line x1="72" y1="72" x2="92" y2="92" stroke="#F97316" stroke-width="16" stroke-linecap="round"/>
+</svg>
