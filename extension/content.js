@@ -1,6 +1,7 @@
 // Content script to highlight keywords on the page
 // Receives a message with { words: [array of words] }
 
+"use strict";
 (function () {
     const highlightColor = '#FFA500';
     const textColor = '#000000';
