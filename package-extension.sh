@@ -15,22 +15,24 @@ fi
 
 rm -f "$ZIP_NAME"
 
-# Exclude any OS or editor files
-echo "Zipping the following files into $ZIP_NAME:"
+
+# Build the list of files to include (single source of truth)
+INCLUDE_LIST=".package-include-files.txt"
 find "$EXT_DIR" \
   -type f \
   ! -name '*.DS_Store' \
   ! -name '.git*' \
   ! -path '*/.git/*' \
   ! -name '.vscode*' \
-  ! -path '*/.vscode/*'
+  ! -path '*/.vscode/*' \
+  > "$INCLUDE_LIST"
 
-zip -r "$ZIP_NAME" "$EXT_DIR" \
-  -x "*.DS_Store" \
-  -x "*/.DS_Store" \
-  -x "*.git*" \
-  -x "*/.git*" \
-  -x "*.vscode*" \
-  -x "*/.vscode*"
+echo "Zipping the following files into $ZIP_NAME:"
+cat "$INCLUDE_LIST"
+
+# Use zip with -@ to read the file list from stdin
+zip "$ZIP_NAME" -@ < "$INCLUDE_LIST"
+
+rm -f "$INCLUDE_LIST"
 
 echo "Packaged as $ZIP_NAME. Ready for upload to Chrome Web Store."
