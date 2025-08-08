@@ -76,4 +76,29 @@
                   highlightKeywords(words);
             }
       });
+
+      // Auto-apply logic: run highlight if enabled in localStorage
+      function autoApplyFromStorage() {
+            try {
+                  const autoApply = localStorage.getItem('autoApply');
+                  if (autoApply === '1') {
+                        const wordsRaw = localStorage.getItem('searchWords') || '';
+                        const words = wordsRaw.split('\n').map(w => w.trim()).filter(Boolean);
+                        highlightKeywords(words);
+                  }
+            } catch (e) {
+                  // localStorage may not be available in all contexts
+            }
+      }
+
+      // Listen for tab/window focus events
+      window.addEventListener('focus', autoApplyFromStorage);
+      document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+                  autoApplyFromStorage();
+            }
+      });
+
+      // Initial auto-apply on load
+      autoApplyFromStorage();
 })();
