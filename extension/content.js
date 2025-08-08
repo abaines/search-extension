@@ -1,9 +1,9 @@
 "use strict";
 
 (function () {
-      const highlightColor = '#FFA500';
-      const textColor = '#000000';
-      const highlightTag = 'MARK';
+      const highlightColor = "#FFA500";
+      const textColor = "#000000";
+      const highlightTag = "MARK";
 
       function highlightMatchInNode(match, node) {
             const matchText = match[0];
@@ -13,7 +13,7 @@
             const mark = document.createElement(highlightTag);
             mark.style.backgroundColor = highlightColor;
             mark.style.color = textColor;
-            mark.style.borderRadius = '3px';
+            mark.style.borderRadius = "3px";
             mark.textContent = middleNode.nodeValue;
             middleNode.parentNode.replaceChild(mark, middleNode);
       }
@@ -23,17 +23,17 @@
 
             let occurrenceCount = 0;
             const regex = new RegExp(
-                  keywords.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'),
-                  'gi'
+                  keywords.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
+                  "gi"
             );
 
             const isHighlightableTextNode = {
                   acceptNode: function (node) {
                         const parentTag = node.parentElement.tagName;
                         if (
-                              parentTag === 'SCRIPT' ||
-                              parentTag === 'STYLE' ||
-                              parentTag === 'NOSCRIPT' ||
+                              parentTag === "SCRIPT" ||
+                              parentTag === "STYLE" ||
+                              parentTag === "NOSCRIPT" ||
                               node.parentElement.isContentEditable ||
                               node.parentElement.closest(highlightTag)
                         ) {
@@ -45,7 +45,7 @@
                         const testResult = regex.test(node.nodeValue);
                         regex.lastIndex = 0;
                         return testResult ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-                  }
+                  },
             };
 
             const walker = document.createTreeWalker(
@@ -63,41 +63,37 @@
             nodes.forEach(function (node) {
                   const matches = [...node.nodeValue.matchAll(regex)];
                   occurrenceCount += matches.length;
-                  matches.reverse().forEach(match => highlightMatchInNode(match, node));
+                  matches.reverse().forEach((match) => highlightMatchInNode(match, node));
             });
 
             console.log(`🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`);
       }
 
       function handleHighlightWordsMessage(msg, sender, sendResponse) {
-            if (msg.type === 'HIGHLIGHT_WORDS' && typeof msg.wordsRaw === 'string') {
-                  const words = msg.wordsRaw.split('\n').map(w => w.trim()).filter(Boolean);
+            if (msg.type === "HIGHLIGHT_WORDS" && typeof msg.wordsRaw === "string") {
+                  const words = msg.wordsRaw.split("\n").map((w) => w.trim()).filter(Boolean);
                   highlightKeywords(words);
             }
       }
 
       chrome.runtime.onMessage.addListener(handleHighlightWordsMessage);
 
-
-      // Auto-apply logic: run highlight if enabled in chrome.storage
       function autoApplyFromStorage() {
-            chrome.storage && chrome.storage.local.get(['autoApply', 'searchWords'], function (items) {
+            chrome.storage && chrome.storage.local.get(["autoApply", "searchWords"], function (items) {
                   if (items.autoApply) {
-                        const wordsRaw = items.searchWords || '';
-                        const words = wordsRaw.split('\n').map(w => w.trim()).filter(Boolean);
+                        const wordsRaw = items.searchWords || "";
+                        const words = wordsRaw.split("\n").map((w) => w.trim()).filter(Boolean);
                         highlightKeywords(words);
                   }
             });
       }
 
-      // Listen for tab/window focus events
-      window.addEventListener('focus', autoApplyFromStorage);
-      document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'visible') {
+      window.addEventListener("focus", autoApplyFromStorage);
+      document.addEventListener("visibilitychange", function () {
+            if (document.visibilityState === "visible") {
                   autoApplyFromStorage();
             }
       });
 
-      // Initial auto-apply on load
       autoApplyFromStorage();
 })();
