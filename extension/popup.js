@@ -5,12 +5,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const wordsTextarea = document.getElementById('words');
       const autoApplyCheckbox = document.getElementById('autoApplyCheckbox');
 
+
       function saveWords() {
-            localStorage.setItem('searchWords', wordsTextarea.value);
+            chrome.storage && chrome.storage.local.set({ searchWords: wordsTextarea.value });
       }
 
       function saveAutoApplyState() {
-            localStorage.setItem('autoApply', autoApplyCheckbox.checked ? '1' : '0');
+            chrome.storage && chrome.storage.local.set({ autoApply: autoApplyCheckbox.checked ? '1' : '0' });
       }
 
       function sendWordsToContentScript(wordsRaw) {
@@ -22,19 +23,18 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Words to search (raw):\n' + wordsRaw);
       }
 
-      // Restore saved words
-      const saved = localStorage.getItem('searchWords');
-      if (saved) {
-            wordsTextarea.value = saved;
-      }
 
-      // Restore checkbox state
-      const autoApplySaved = localStorage.getItem('autoApply');
-      if (autoApplySaved === '1') {
-            autoApplyCheckbox.checked = true;
-      } else {
-            autoApplyCheckbox.checked = false;
-      }
+      // Restore saved words and checkbox state
+      chrome.storage && chrome.storage.local.get(['searchWords', 'autoApply'], function (items) {
+            if (items.searchWords) {
+                  wordsTextarea.value = items.searchWords;
+            }
+            if (items.autoApply === '1') {
+                  autoApplyCheckbox.checked = true;
+            } else {
+                  autoApplyCheckbox.checked = false;
+            }
+      });
 
       searchBtn.addEventListener('click', function () {
             const wordsRaw = wordsTextarea.value;

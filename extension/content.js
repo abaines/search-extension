@@ -77,18 +77,16 @@
             }
       });
 
-      // Auto-apply logic: run highlight if enabled in localStorage
+
+      // Auto-apply logic: run highlight if enabled in chrome.storage
       function autoApplyFromStorage() {
-            try {
-                  const autoApply = localStorage.getItem('autoApply');
-                  if (autoApply === '1') {
-                        const wordsRaw = localStorage.getItem('searchWords') || '';
+            chrome.storage && chrome.storage.local.get(['autoApply', 'searchWords'], function (items) {
+                  if (items.autoApply === '1') {
+                        const wordsRaw = items.searchWords || '';
                         const words = wordsRaw.split('\n').map(w => w.trim()).filter(Boolean);
                         highlightKeywords(words);
                   }
-            } catch (e) {
-                  // localStorage may not be available in all contexts
-            }
+            });
       }
 
       // Listen for tab/window focus events
