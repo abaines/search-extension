@@ -53,18 +53,20 @@
             nodes.forEach(function (node) {
                   const matches = [...node.nodeValue.matchAll(regex)];
                   occurrenceCount += matches.length;
-                  matches.reverse().forEach(match => {
-                        const matchText = match[0];
-                        const matchIndex = match.index;
-                        node.splitText(matchIndex + matchText.length);
-                        const middleNode = node.splitText(matchIndex);
-                        const mark = document.createElement(highlightTag);
-                        mark.style.backgroundColor = highlightColor;
-                        mark.style.color = textColor;
-                        mark.style.borderRadius = '3px';
-                        mark.textContent = middleNode.nodeValue;
-                        middleNode.parentNode.replaceChild(mark, middleNode);
-                  });
+                    const highlightMatchInNode = match => {
+                              const matchText = match[0];
+                              const matchIndex = match.index;
+                              node.splitText(matchIndex + matchText.length);
+                              const middleNode = node.splitText(matchIndex);
+                              const mark = document.createElement(highlightTag);
+                              mark.style.backgroundColor = highlightColor;
+                              mark.style.color = textColor;
+                              mark.style.borderRadius = '3px';
+                              mark.textContent = middleNode.nodeValue;
+                              middleNode.parentNode.replaceChild(mark, middleNode);
+                    };
+
+                    matches.reverse().forEach(highlightMatchInNode);
             });
 
             console.log(`🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`);
