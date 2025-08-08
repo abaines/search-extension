@@ -11,29 +11,32 @@
         if (!keywords || !keywords.length) return;
         let occurrenceCount = 0;
         const regex = new RegExp(keywords.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'gi');
+
+        const isHighlightableTextNode = {
+            acceptNode: function (node) {
+                const parentTag = node.parentElement.tagName;
+                if (
+                    parentTag === 'SCRIPT' ||
+                    parentTag === 'STYLE' ||
+                    parentTag === 'NOSCRIPT' ||
+                    node.parentElement.isContentEditable ||
+                    node.parentElement.closest(highlightTag)
+                ) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                if (!/\S/.test(node.nodeValue)) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                const testResult = regex.test(node.nodeValue);
+                regex.lastIndex = 0;
+                return testResult ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+            }
+        };
+
         const walker = document.createTreeWalker(
             document.body,
             NodeFilter.SHOW_TEXT,
-            {
-                acceptNode: function (node) {
-                    const parentTag = node.parentElement.tagName;
-                    if (
-                        parentTag === 'SCRIPT' ||
-                        parentTag === 'STYLE' ||
-                        parentTag === 'NOSCRIPT' ||
-                        node.parentElement.isContentEditable ||
-                        node.parentElement.closest(highlightTag)
-                    ) {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-                    if (!/\S/.test(node.nodeValue)) {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-                    const testResult = regex.test(node.nodeValue);
-                    regex.lastIndex = 0;
-                    return testResult ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-                }
-            }
+            isHighlightableTextNode
         );
         const nodes = [];
         let currentNode;
