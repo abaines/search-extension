@@ -16,5 +16,5 @@
     <line x1="67" y1="67" x2="72" y2="72" stroke="#374151" stroke-width="12" stroke-linecap="round"/>
 
     <!-- Handle -->
-    <line x1="72" y1="72" x2="92" y2="92" stroke="#F97316" stroke-width="16" stroke-linecap="round"/>
+    <line x1="75" y1="75" x2="92" y2="92" stroke="#F97316" stroke-width="16" stroke-linecap="round"/>
 </svg>
