@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Package the extension for Chrome Web Store upload
 # Usage: ./package-extension.sh
+# Compatible with local and CI (GitHub Actions) environments
 
-set -e
+set -euo pipefail
 
 EXT_DIR="extension"
 ZIP_NAME="search-extension-chrome.zip"
@@ -15,6 +16,15 @@ fi
 rm -f "$ZIP_NAME"
 
 # Exclude any OS or editor files
+echo "Zipping the following files into $ZIP_NAME:"
+find "$EXT_DIR" \
+  -type f \
+  ! -name '*.DS_Store' \
+  ! -name '.git*' \
+  ! -path '*/.git/*' \
+  ! -name '.vscode*' \
+  ! -path '*/.vscode/*'
+
 zip -r "$ZIP_NAME" "$EXT_DIR" \
   -x "*.DS_Store" \
   -x "*/.DS_Store" \
