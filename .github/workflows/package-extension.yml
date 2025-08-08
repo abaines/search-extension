@@ -1,0 +1,27 @@
+name: Package Chrome Extension
+
+on:
+  workflow_dispatch:
+    # Allows manual trigger from GitHub UI
+
+jobs:
+  package-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+
+      - name: Make packaging script executable
+        run: chmod +x package-extension.sh
+
+      - name: Package extension
+        run: ./package-extension.sh
+
+      - name: Upload packaged zip as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: search-extension-chrome
+          path: search-extension-chrome.zip
