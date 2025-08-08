@@ -15,7 +15,12 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Words to search:', words);
         // Save words to localStorage
         localStorage.setItem('searchWords', wordsTextarea.value);
-        // Next step: send words to content script for highlighting
+        // Send words to content script for highlighting
+        chrome.tabs && chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            if (tabs[0] && tabs[0].id) {
+                chrome.tabs.sendMessage(tabs[0].id, { type: 'HIGHLIGHT_WORDS', words });
+            }
+        });
     });
 
     // Save words on every input for reliability
