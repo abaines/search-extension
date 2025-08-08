@@ -11,14 +11,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     searchBtn.addEventListener('click', function () {
-        const words = wordsTextarea.value.split('\n').map(w => w.trim()).filter(Boolean);
-        console.log('Words to search:', words);
+        const wordsRaw = wordsTextarea.value;
+        console.log('Words to search (raw):', wordsRaw);
         // Save words to localStorage
-        localStorage.setItem('searchWords', wordsTextarea.value);
-        // Send words to content script for highlighting
+        localStorage.setItem('searchWords', wordsRaw);
+        // Send raw words string to content script for highlighting
         chrome.tabs && chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             if (tabs[0] && tabs[0].id) {
-                chrome.tabs.sendMessage(tabs[0].id, { type: 'HIGHLIGHT_WORDS', words });
+                chrome.tabs.sendMessage(tabs[0].id, { type: 'HIGHLIGHT_WORDS', wordsRaw });
             }
         });
     });
