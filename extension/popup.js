@@ -37,21 +37,20 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
 
-      // Restore saved words and checkbox state
-      chrome.storage && chrome.storage.local.get(['searchWords', 'autoApply'], function (items) {
+
+      function restoreWordsAndCheckboxState(items) {
             if (items.searchWords) {
                   wordsTextarea.value = items.searchWords;
             }
             autoApplyCheckbox.checked = !!items.autoApply;
-      });
+      }
+
+      chrome.storage && chrome.storage.local.get(['searchWords', 'autoApply'], restoreWordsAndCheckboxState);
 
 
       searchBtn.addEventListener('click', applyWords);
 
-      // Save words on every input for reliability
       wordsTextarea.addEventListener('input', saveWords);
-
-      // Save checkbox state on change
       autoApplyCheckbox.addEventListener('change', saveAutoApplyState);
 
 
