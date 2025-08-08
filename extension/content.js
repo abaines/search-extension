@@ -1,12 +1,22 @@
-// Content script to highlight keywords on the page
-// Receives a message with { words: [array of words] }
-
 "use strict";
 
 (function () {
       const highlightColor = '#FFA500';
       const textColor = '#000000';
       const highlightTag = 'MARK';
+
+      function highlightMatchInNode(match, node) {
+            const matchText = match[0];
+            const matchIndex = match.index;
+            node.splitText(matchIndex + matchText.length);
+            const middleNode = node.splitText(matchIndex);
+            const mark = document.createElement(highlightTag);
+            mark.style.backgroundColor = highlightColor;
+            mark.style.color = textColor;
+            mark.style.borderRadius = '3px';
+            mark.textContent = middleNode.nodeValue;
+            middleNode.parentNode.replaceChild(mark, middleNode);
+      }
 
       function highlightKeywords(keywords) {
             if (!keywords || !keywords.length) return;
@@ -53,20 +63,7 @@
             nodes.forEach(function (node) {
                   const matches = [...node.nodeValue.matchAll(regex)];
                   occurrenceCount += matches.length;
-                    const highlightMatchInNode = match => {
-                              const matchText = match[0];
-                              const matchIndex = match.index;
-                              node.splitText(matchIndex + matchText.length);
-                              const middleNode = node.splitText(matchIndex);
-                              const mark = document.createElement(highlightTag);
-                              mark.style.backgroundColor = highlightColor;
-                              mark.style.color = textColor;
-                              mark.style.borderRadius = '3px';
-                              mark.textContent = middleNode.nodeValue;
-                              middleNode.parentNode.replaceChild(mark, middleNode);
-                    };
-
-                    matches.reverse().forEach(highlightMatchInNode);
+                  matches.reverse().forEach(match => highlightMatchInNode(match, node));
             });
 
             console.log(`🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`);
