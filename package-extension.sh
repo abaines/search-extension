@@ -16,7 +16,7 @@ fi
 rm -f "$ZIP_NAME"
 
 
-# Build the list of files to include (single source of truth)
+# Build the list of files to include (single source of truth), stripping the extension/ prefix
 INCLUDE_LIST=".package-include-files.txt"
 find "$EXT_DIR" \
   -type f \
@@ -25,13 +25,13 @@ find "$EXT_DIR" \
   ! -path '*/.git/*' \
   ! -name '.vscode*' \
   ! -path '*/.vscode/*' \
-  > "$INCLUDE_LIST"
+  | sed "s|^$EXT_DIR/||" > "$INCLUDE_LIST"
 
 echo "Zipping the following files into $ZIP_NAME:"
 cat "$INCLUDE_LIST"
 
-# Use zip with -@ to read the file list from stdin
-zip "$ZIP_NAME" -@ < "$INCLUDE_LIST"
+# Change to extension directory and zip contents at root of zip
+(cd "$EXT_DIR" && zip "../$ZIP_NAME" -@ < "../$INCLUDE_LIST")
 
 rm -f "$INCLUDE_LIST"
 
