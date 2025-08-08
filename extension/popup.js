@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       function saveAutoApplyState() {
-            chrome.storage && chrome.storage.local.set({ autoApply: autoApplyCheckbox.checked ? '1' : '0' });
+            chrome.storage && chrome.storage.local.set({ autoApply: autoApplyCheckbox.checked });
       }
 
       function sendWordsToContentScript(wordsRaw) {
@@ -29,11 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (items.searchWords) {
                   wordsTextarea.value = items.searchWords;
             }
-            if (items.autoApply === '1') {
-                  autoApplyCheckbox.checked = true;
-            } else {
-                  autoApplyCheckbox.checked = false;
-            }
+            autoApplyCheckbox.checked = !!items.autoApply;
       });
 
       searchBtn.addEventListener('click', function () {
