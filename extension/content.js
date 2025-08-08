@@ -81,7 +81,7 @@
       // Auto-apply logic: run highlight if enabled in chrome.storage
       function autoApplyFromStorage() {
             chrome.storage && chrome.storage.local.get(['autoApply', 'searchWords'], function (items) {
-                  if (items.autoApply === '1') {
+                  if (items.autoApply) {
                         const wordsRaw = items.searchWords || '';
                         const words = wordsRaw.split('\n').map(w => w.trim()).filter(Boolean);
                         highlightKeywords(words);
