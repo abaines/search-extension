@@ -60,8 +60,9 @@
 
     // Listen for messages from the popup
     chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-        if (msg.type === 'HIGHLIGHT_WORDS' && Array.isArray(msg.words)) {
-            highlightKeywords(msg.words);
+        if (msg.type === 'HIGHLIGHT_WORDS' && typeof msg.wordsRaw === 'string') {
+            const words = msg.wordsRaw.split('\n').map(w => w.trim()).filter(Boolean);
+            highlightKeywords(words);
         }
     });
 })();
