@@ -1,5 +1,6 @@
 
 
+"use strict";
 document.addEventListener('DOMContentLoaded', function () {
     const searchBtn = document.getElementById('searchBtn');
     const wordsTextarea = document.getElementById('words');
