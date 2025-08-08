@@ -48,17 +48,13 @@ document.addEventListener('DOMContentLoaded', function () {
       // Save checkbox state on change
       autoApplyCheckbox.addEventListener('change', saveAutoApplyState);
 
-      // Listen for tab/window focus and auto-apply if checked
-      chrome.tabs && chrome.tabs.onActivated && chrome.tabs.onActivated.addListener(function () {
+      function autoApplyIfChecked() {
             if (autoApplyCheckbox.checked) {
                   const wordsRaw = wordsTextarea.value;
                   sendWordsToContentScript(wordsRaw);
             }
-      });
-      chrome.windows && chrome.windows.onFocusChanged && chrome.windows.onFocusChanged.addListener(function () {
-            if (autoApplyCheckbox.checked) {
-                  const wordsRaw = wordsTextarea.value;
-                  sendWordsToContentScript(wordsRaw);
-            }
-      });
+      }
+
+      chrome.tabs && chrome.tabs.onActivated && chrome.tabs.onActivated.addListener(autoApplyIfChecked);
+      chrome.windows && chrome.windows.onFocusChanged && chrome.windows.onFocusChanged.addListener(autoApplyIfChecked);
 });
