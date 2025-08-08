@@ -60,12 +60,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
       }
 
-      function addListenerIfExists(obj, event, handler) {
+      function addAutoApplyListenerIfExists(obj, event) {
             if (obj && obj[event] && typeof obj[event].addListener === 'function') {
-                  obj[event].addListener(handler);
+                  obj[event].addListener(autoApplyIfChecked);
             }
       }
 
-      addListenerIfExists(chrome.tabs, 'onActivated', autoApplyIfChecked);
-      addListenerIfExists(chrome.windows, 'onFocusChanged', autoApplyIfChecked);
+      addAutoApplyListenerIfExists(chrome.tabs, 'onActivated');
+      addAutoApplyListenerIfExists(chrome.windows, 'onFocusChanged');
 });
