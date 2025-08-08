@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     searchBtn.addEventListener('click', function () {
         const wordsRaw = wordsTextarea.value;
-        console.log('Words to search (raw):', wordsRaw);
         saveWords();
         // Send raw words string to content script for highlighting
         chrome.tabs && chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -24,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 chrome.tabs.sendMessage(tabs[0].id, { type: 'HIGHLIGHT_WORDS', wordsRaw });
             }
         });
+        console.log('Words to search (raw):\n' + wordsRaw);
     });
 
     // Save words on every input for reliability
