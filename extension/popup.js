@@ -6,12 +6,25 @@ document.addEventListener('DOMContentLoaded', function () {
       const autoApplyCheckbox = document.getElementById('autoApplyCheckbox');
 
 
+
+      function setStorage(obj) {
+            if (chrome.storage && chrome.storage.local) {
+                  chrome.storage.local.set(obj);
+            }
+      }
+
       function saveWords() {
-            chrome.storage && chrome.storage.local.set({ searchWords: wordsTextarea.value });
+            setStorage({ searchWords: wordsTextarea.value });
       }
 
       function saveAutoApplyState() {
-            chrome.storage && chrome.storage.local.set({ autoApply: autoApplyCheckbox.checked });
+            setStorage({ autoApply: autoApplyCheckbox.checked });
+      }
+
+      function applyWords() {
+            const wordsRaw = wordsTextarea.value;
+            saveWords();
+            sendWordsToContentScript(wordsRaw);
       }
 
       function sendWordsToContentScript(wordsRaw) {
@@ -32,11 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
             autoApplyCheckbox.checked = !!items.autoApply;
       });
 
-      searchBtn.addEventListener('click', function () {
-            const wordsRaw = wordsTextarea.value;
-            saveWords();
-            sendWordsToContentScript(wordsRaw);
-      });
+
+      searchBtn.addEventListener('click', applyWords);
 
       // Save words on every input for reliability
       wordsTextarea.addEventListener('input', saveWords);
@@ -44,13 +54,19 @@ document.addEventListener('DOMContentLoaded', function () {
       // Save checkbox state on change
       autoApplyCheckbox.addEventListener('change', saveAutoApplyState);
 
+
       function autoApplyIfChecked() {
             if (autoApplyCheckbox.checked) {
-                  const wordsRaw = wordsTextarea.value;
-                  sendWordsToContentScript(wordsRaw);
+                  applyWords();
             }
       }
 
-      chrome.tabs && chrome.tabs.onActivated && chrome.tabs.onActivated.addListener(autoApplyIfChecked);
-      chrome.windows && chrome.windows.onFocusChanged && chrome.windows.onFocusChanged.addListener(autoApplyIfChecked);
+      function addListenerIfExists(obj, event, handler) {
+            if (obj && obj[event] && typeof obj[event].addListener === 'function') {
+                  obj[event].addListener(handler);
+            }
+      }
+
+      addListenerIfExists(chrome.tabs, 'onActivated', autoApplyIfChecked);
+      addListenerIfExists(chrome.windows, 'onFocusChanged', autoApplyIfChecked);
 });
