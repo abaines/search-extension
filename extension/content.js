@@ -142,5 +142,15 @@
             }
       });
 
+      // Listen for Chrome tab and window events (if available)
+      if (chrome && chrome.runtime && chrome.runtime.onMessage) {
+            if (chrome.tabs && chrome.tabs.onActivated) {
+                  chrome.tabs.onActivated.addListener(autoApplyFromStorage);
+            }
+            if (chrome.windows && chrome.windows.onFocusChanged) {
+                  chrome.windows.onFocusChanged.addListener(autoApplyFromStorage);
+            }
+      }
+
       autoApplyFromStorage();
 })();
