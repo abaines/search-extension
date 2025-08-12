@@ -13,6 +13,12 @@
     "128": "assets/icon-128.png"
   },
   "permissions": ["storage"],
+  "web_accessible_resources": [
+    {
+      "resources": ["injected-network-patch.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "background": {
     "service_worker": "background.js"
   },

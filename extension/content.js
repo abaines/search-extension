@@ -154,34 +154,26 @@
 
       autoApplyFromStorage();
 
-      // Monkey-patch fetch and XMLHttpRequest to trigger highlight after network calls
-      (function patchNetworkForHighlighting() {
-            // Patch fetch
-            if (window.fetch) {
-                  const originalFetch = window.fetch;
-                  window.fetch = function (...args) {
-                        return originalFetch.apply(this, args).then(response => {
-                              setTimeout(autoApplyFromStorage, 0);
-                              console.log("[content.js] Fetch request completed.");
-                              return response;
-                        });
+      // Inject a script into the page context to patch fetch/XMLHttpRequest for network detection
+      (function injectNetworkPatchScript() {
+            try {
+                  const script = document.createElement('script');
+                  script.src = chrome.runtime.getURL('injected-network-patch.js');
+                  script.onload = function () {
+                        this.remove();
                   };
-            } else {
-                  console.warn('[content.js] Unable to monkey-patch fetch: window.fetch not available');
-            }
-
-            // Patch XMLHttpRequest
-            if (window.XMLHttpRequest) {
-                  const originalOpen = XMLHttpRequest.prototype.open;
-                  XMLHttpRequest.prototype.open = function (...args) {
-                        this.addEventListener('loadend', function () {
-                              setTimeout(autoApplyFromStorage, 0);
-                              console.log("[content.js] XMLHttpRequest completed.");
-                        });
-                        return originalOpen.apply(this, args);
-                  };
-            } else {
-                  console.warn('[content.js] Unable to monkey-patch XMLHttpRequest: not available');
+                  (document.head || document.documentElement).appendChild(script);
+                  console.log('[content.js] Injected network patch script.');
+            } catch (e) {
+                  console.warn('[content.js] Failed to inject network patch script:', e);
             }
       })();
+
+      // Listen for postMessage from injected script for network activity
+      window.addEventListener('message', function (event) {
+            if (event && event.data && event.data.source === 'search-extension-network' && event.data.type === 'NETWORK_ACTIVITY') {
+                  console.log('[content.js] Detected network activity via injected script. Reapplying highlights.');
+                  autoApplyFromStorage();
+            }
+      });
 })();
