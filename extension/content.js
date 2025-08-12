@@ -84,11 +84,21 @@
 
       function highlightAllMatchesInNodes(nodes, regex) {
             let occurrenceCount = 0;
+            const wordCounts = {};
             nodes.forEach(function (node) {
                   const matches = [...node.nodeValue.matchAll(regex)];
                   occurrenceCount += matches.length;
+                  matches.forEach((match) => {
+                        const word = match[0].toLowerCase();
+                        wordCounts[word] = (wordCounts[word] || 0) + 1;
+                  });
                   matches.reverse().forEach((match) => highlightMatchInNode(match, node));
             });
+            if (Object.keys(wordCounts).length > 0) {
+                  console.log('[content.js] Word counts:', wordCounts);
+            } else {
+                  console.log('[content.js] No words found.');
+            }
             return occurrenceCount;
       }
 
