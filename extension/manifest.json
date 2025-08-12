@@ -13,6 +13,9 @@
     "128": "assets/icon-128.png"
   },
   "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

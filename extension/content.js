@@ -66,6 +66,12 @@
                   matches.reverse().forEach((match) => highlightMatchInNode(match, node));
             });
 
+            // Send count to background for badge
+            if (chrome.runtime && chrome.runtime.sendMessage) {
+                  chrome.runtime.sendMessage({ type: "SET_BADGE_COUNT", count: occurrenceCount });
+                  console.log('[content.js] Sending badge count to background:', occurrenceCount);
+            }
+
             console.log(`🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`);
       }
 
@@ -73,6 +79,7 @@
             if (msg.type === "HIGHLIGHT_WORDS" && typeof msg.wordsRaw === "string") {
                   const words = msg.wordsRaw.split("\n").map((w) => w.trim()).filter(Boolean);
                   highlightKeywords(words);
+                  console.log('[content.js] Received HIGHLIGHT_WORDS message:', msg.wordsRaw);
             }
       }
 
