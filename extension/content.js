@@ -18,8 +18,19 @@
             middleNode.parentNode.replaceChild(mark, middleNode);
       }
 
+
+      function removeAllHighlights() {
+            const marks = document.querySelectorAll(highlightTag);
+            marks.forEach(mark => {
+                  // Replace the <mark> with its text content
+                  mark.replaceWith(document.createTextNode(mark.textContent));
+            });
+      }
+
       function highlightKeywords(keywords) {
             if (!keywords || !keywords.length) return;
+
+            removeAllHighlights();
 
             const regex = buildKeywordsRegex(keywords);
             const nodes = getHighlightableTextNodes(regex);
