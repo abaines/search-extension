@@ -96,8 +96,6 @@
             });
             if (Object.keys(wordCounts).length > 0) {
                   console.log('[content.js] Word counts:', wordCounts);
-            } else {
-                  console.log('[content.js] No words found.');
             }
             return occurrenceCount;
       }
@@ -106,7 +104,9 @@
             const highlightCountMessage = `🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`;
             if (chrome.runtime && chrome.runtime.sendMessage) {
                   chrome.runtime.sendMessage({ type: "SET_BADGE_COUNT", count: occurrenceCount });
-                  console.log('[content.js] ' + highlightCountMessage + ' (sent to background)');
+                  if (occurrenceCount > 0) {
+                        console.log('[content.js] ' + highlightCountMessage + ' (sent to background)');
+                  }
             } else {
                   console.warn('[content.js] ' + highlightCountMessage + ' (chrome.runtime.sendMessage not available)');
             }
