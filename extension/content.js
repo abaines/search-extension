@@ -11,6 +11,7 @@
             node.splitText(matchIndex + matchText.length);
             const middleNode = node.splitText(matchIndex);
             const mark = document.createElement(highlightTag);
+            mark.className = "search-extension-highlight";
             mark.style.backgroundColor = highlightColor;
             mark.style.color = textColor;
             mark.style.borderRadius = "3px";
@@ -20,7 +21,7 @@
 
 
       function removeAllHighlights() {
-            const marks = document.querySelectorAll(highlightTag);
+            const marks = document.querySelectorAll(`${highlightTag}.search-extension-highlight`);
             marks.forEach(mark => {
                   // Replace the <mark> with its text content
                   mark.replaceWith(document.createTextNode(mark.textContent));
