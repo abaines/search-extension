@@ -35,8 +35,8 @@
 
             const regex = buildKeywordsRegex(keywords);
             const nodes = getHighlightableTextNodes(regex);
-            const occurrenceCount = highlightAllMatchesInNodes(nodes, regex);
-            updateBadgeAndLog(occurrenceCount);
+            const wordCounts = highlightAllMatchesInNodes(nodes, regex);
+            updateBadgeAndLog(wordCounts);
       }
 
       function buildKeywordsRegex(keywords) {
@@ -83,29 +83,25 @@
       }
 
       function highlightAllMatchesInNodes(nodes, regex) {
-            let occurrenceCount = 0;
             const wordCounts = {};
             nodes.forEach(function (node) {
                   const matches = [...node.nodeValue.matchAll(regex)];
-                  occurrenceCount += matches.length;
                   matches.forEach((match) => {
                         const word = match[0].toLowerCase();
                         wordCounts[word] = (wordCounts[word] || 0) + 1;
                   });
                   matches.reverse().forEach((match) => highlightMatchInNode(match, node));
             });
-            if (Object.keys(wordCounts).length > 0) {
-                  console.log('[content.js] Word counts:', wordCounts);
-            }
-            return occurrenceCount;
+            return wordCounts;
       }
 
-      function updateBadgeAndLog(occurrenceCount) {
+      function updateBadgeAndLog(wordCounts) {
+            const occurrenceCount = Object.values(wordCounts).reduce((a, b) => a + b, 0);
             const highlightCountMessage = `🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`;
             if (chrome.runtime && chrome.runtime.sendMessage) {
                   chrome.runtime.sendMessage({ type: "SET_BADGE_COUNT", count: occurrenceCount });
                   if (occurrenceCount > 0) {
-                        console.log('[content.js] ' + highlightCountMessage + ' (sent to background)');
+                        console.log(`[content.js] ${highlightCountMessage} (sent to background) | Word counts:`, wordCounts);
                   }
             } else {
                   console.warn('[content.js] ' + highlightCountMessage + ' (chrome.runtime.sendMessage not available)');
