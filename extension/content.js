@@ -166,6 +166,8 @@
                               return response;
                         });
                   };
+            } else {
+                  console.warn('[content.js] Unable to monkey-patch fetch: window.fetch not available');
             }
 
             // Patch XMLHttpRequest
@@ -178,6 +180,8 @@
                         });
                         return originalOpen.apply(this, args);
                   };
+            } else {
+                  console.warn('[content.js] Unable to monkey-patch XMLHttpRequest: not available');
             }
       })();
 })();
