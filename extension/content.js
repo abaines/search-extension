@@ -67,12 +67,13 @@
             });
 
             // Send count to background for badge
+            const highlightCountMessage = `🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`;
             if (chrome.runtime && chrome.runtime.sendMessage) {
                   chrome.runtime.sendMessage({ type: "SET_BADGE_COUNT", count: occurrenceCount });
-                  console.log('[content.js] Sending badge count to background:', occurrenceCount);
+                  console.log(highlightCountMessage + ' (sent to background)');
+            } else {
+                  console.warn(highlightCountMessage + ' (chrome.runtime.sendMessage not available)');
             }
-
-            console.log(`🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`);
       }
 
       function handleHighlightWordsMessage(msg, sender, sendResponse) {
