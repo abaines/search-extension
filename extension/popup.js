@@ -20,18 +20,19 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       function applyWords() {
-            const wordsRaw = wordsTextarea.value;
             saveWords();
-            sendWordsToContentScript(wordsRaw);
+            notifyContentScriptWordsUpdated();
       }
 
-      function sendWordsToContentScript(wordsRaw) {
-            chrome.tabs && chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                  if (tabs[0] && tabs[0].id) {
-                        chrome.tabs.sendMessage(tabs[0].id, { type: 'HIGHLIGHT_WORDS', wordsRaw });
-                        console.log('Words to search (raw):\n' + wordsRaw);
-                  }
-            });
+      function notifyContentScriptWordsUpdated() {
+            if (chrome.tabs && chrome.tabs.query) {
+                  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                        if (tabs[0] && tabs[0].id) {
+                              chrome.tabs.sendMessage(tabs[0].id, { type: 'HIGHLIGHT_WORDS_UPDATED' });
+                              console.log('[popup.js] Notified content script: HIGHLIGHT_WORDS_UPDATED');
+                        }
+                  });
+            }
       }
 
       function restoreWordsAndCheckboxState(items) {
