@@ -21,12 +21,20 @@
       function highlightKeywords(keywords) {
             if (!keywords || !keywords.length) return;
 
-            let occurrenceCount = 0;
-            const regex = new RegExp(
+            const regex = buildKeywordsRegex(keywords);
+            const nodes = getHighlightableTextNodes(regex);
+            const occurrenceCount = highlightAllMatchesInNodes(nodes, regex);
+            updateBadgeAndLog(occurrenceCount);
+      }
+
+      function buildKeywordsRegex(keywords) {
+            return new RegExp(
                   keywords.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
                   "gi"
             );
+      }
 
+      function getHighlightableTextNodes(regex) {
             const isHighlightableTextNode = {
                   acceptNode: function (node) {
                         const parentTag = node.parentElement.tagName;
@@ -59,14 +67,20 @@
             while ((currentNode = walker.nextNode())) {
                   nodes.push(currentNode);
             }
+            return nodes;
+      }
 
+      function highlightAllMatchesInNodes(nodes, regex) {
+            let occurrenceCount = 0;
             nodes.forEach(function (node) {
                   const matches = [...node.nodeValue.matchAll(regex)];
                   occurrenceCount += matches.length;
                   matches.reverse().forEach((match) => highlightMatchInNode(match, node));
             });
+            return occurrenceCount;
+      }
 
-            // Send count to background for badge
+      function updateBadgeAndLog(occurrenceCount) {
             const highlightCountMessage = `🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`;
             if (chrome.runtime && chrome.runtime.sendMessage) {
                   chrome.runtime.sendMessage({ type: "SET_BADGE_COUNT", count: occurrenceCount });
