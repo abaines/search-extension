@@ -162,6 +162,7 @@
                   window.fetch = function (...args) {
                         return originalFetch.apply(this, args).then(response => {
                               setTimeout(autoApplyFromStorage, 0);
+                              console.log("[content.js] Fetch request completed.");
                               return response;
                         });
                   };
@@ -173,6 +174,7 @@
                   XMLHttpRequest.prototype.open = function (...args) {
                         this.addEventListener('loadend', function () {
                               setTimeout(autoApplyFromStorage, 0);
+                              console.log("[content.js] XMLHttpRequest completed.");
                         });
                         return originalOpen.apply(this, args);
                   };
