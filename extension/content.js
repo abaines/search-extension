@@ -84,9 +84,9 @@
             const highlightCountMessage = `🧡 Found and highlighted ${occurrenceCount} keyword occurrence(s).`;
             if (chrome.runtime && chrome.runtime.sendMessage) {
                   chrome.runtime.sendMessage({ type: "SET_BADGE_COUNT", count: occurrenceCount });
-                  console.log(highlightCountMessage + ' (sent to background)');
+                  console.log('[content.js] ' + highlightCountMessage + ' (sent to background)');
             } else {
-                  console.warn(highlightCountMessage + ' (chrome.runtime.sendMessage not available)');
+                  console.warn('[content.js] ' + highlightCountMessage + ' (chrome.runtime.sendMessage not available)');
             }
       }
 
