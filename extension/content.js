@@ -153,4 +153,29 @@
       }
 
       autoApplyFromStorage();
+
+      // Monkey-patch fetch and XMLHttpRequest to trigger highlight after network calls
+      (function patchNetworkForHighlighting() {
+            // Patch fetch
+            if (window.fetch) {
+                  const originalFetch = window.fetch;
+                  window.fetch = function (...args) {
+                        return originalFetch.apply(this, args).then(response => {
+                              setTimeout(autoApplyFromStorage, 0);
+                              return response;
+                        });
+                  };
+            }
+
+            // Patch XMLHttpRequest
+            if (window.XMLHttpRequest) {
+                  const originalOpen = XMLHttpRequest.prototype.open;
+                  XMLHttpRequest.prototype.open = function (...args) {
+                        this.addEventListener('loadend', function () {
+                              setTimeout(autoApplyFromStorage, 0);
+                        });
+                        return originalOpen.apply(this, args);
+                  };
+            }
+      })();
 })();
