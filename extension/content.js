@@ -92,12 +92,12 @@
 
       function handleHighlightWordsMessage(msg, sender, sendResponse) {
             if (msg.type === "HIGHLIGHT_WORDS_UPDATED") {
-                  console.log('[content.js] Received HIGHLIGHT_WORDS_UPDATED message');
                   chrome.storage && chrome.storage.local.get(["searchWords"], function (items) {
                         const wordsRaw = items.searchWords || "";
                         const words = wordsRaw.split("\n").map((w) => w.trim()).filter(Boolean);
                         highlightKeywords(words);
                   });
+                  console.log('[content.js] Received HIGHLIGHT_WORDS_UPDATED message');
             }
       }
 
