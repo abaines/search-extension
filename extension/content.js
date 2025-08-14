@@ -190,7 +190,7 @@
                   // Only update if this is the currently active tab
                   const isChromeTabsQueryAvailable = (chrome && chrome.tabs && chrome.tabs.query);
                   if (isChromeTabsQueryAvailable) {
-                        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                        function handleActiveTabQuery(tabs) {
                               const isCurrentTabActive = (
                                     tabs && tabs.length &&
                                     tabs[0].id === (
@@ -205,7 +205,8 @@
                               } else {
                                     console.log('[content.js] Network activity not for active tab, ignoring.');
                               }
-                        });
+                        }
+                        chrome.tabs.query({ active: true, currentWindow: true }, handleActiveTabQuery);
                   } else {
                         // Fallback: always update if unable to check tab
                         console.log('[content.js] Detected network activity (tab check unavailable). Reapplying highlights.');
