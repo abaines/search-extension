@@ -187,8 +187,30 @@
       // Listen for postMessage from injected script for network activity
       window.addEventListener('message', function (event) {
             if (event && event.data && event.data.source === 'search-extension-network' && event.data.type === 'NETWORK_ACTIVITY') {
-                  console.log('[content.js] Detected network activity via injected script. Reapplying highlights.');
-                  autoApplyFromStorage();
+                  // Only update if this is the currently active tab
+                  const isChromeTabsQueryAvailable = (chrome && chrome.tabs && chrome.tabs.query);
+                  if (isChromeTabsQueryAvailable) {
+                        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                              const isCurrentTabActive = (
+                                    tabs && tabs.length &&
+                                    tabs[0].id === (
+                                          window.chrome && window.chrome.devtools && window.chrome.devtools.inspectedWindow
+                                                ? window.chrome.devtools.inspectedWindow.tabId
+                                                : tabs[0].id
+                                    )
+                              );
+                              if (isCurrentTabActive) {
+                                    console.log('[content.js] Detected network activity for active tab. Reapplying highlights.');
+                                    autoApplyFromStorage();
+                              } else {
+                                    console.log('[content.js] Network activity not for active tab, ignoring.');
+                              }
+                        });
+                  } else {
+                        // Fallback: always update if unable to check tab
+                        console.log('[content.js] Detected network activity (tab check unavailable). Reapplying highlights.');
+                        autoApplyFromStorage();
+                  }
             }
       });
 })();
