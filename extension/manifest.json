@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "OpenHighlighter",
   "version": "1.0.1",
-  "description": "OpenHighlighter is a source available extension that quickly highlights multiple search words, keywords, or phrases on any webpage. Search and visually mark important terms in real time.",
+  "description": "OpenHighlighter is a source available tool that quickly auto-highlights multiple custom search terms or phrases on any webpage.",
   "action": {
     "default_popup": "popup.html"
   },
