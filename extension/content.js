@@ -129,7 +129,17 @@
                         highlightKeywords(words);
                   }
             }
-            chrome.storage && chrome.storage.local.get(["autoApply", "searchWords"], handleStorageItems);
+            const isChromeStorageLocalGetAvailable = (
+                  chrome &&
+                  chrome.storage &&
+                  chrome.storage.local &&
+                  typeof chrome.storage.local.get === "function"
+            );
+            if (isChromeStorageLocalGetAvailable) {
+                  chrome.storage.local.get(["autoApply", "searchWords"], handleStorageItems);
+            } else {
+                  console.warn("[content.js] chrome.storage.local.get is not available.");
+            }
       }
 
       window.addEventListener("focus", autoApplyFromStorage);
