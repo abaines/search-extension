@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Search Extension",
-  "version": "1.0",
-  "description": "A minimal Chrome extension.",
+  "name": "OpenHighlighter",
+  "version": "1.0.1",
+  "description": "OpenHighlighter is a source available extension that quickly highlights multiple search words on any webpage. Search and visually mark keywords, phrases, or patterns in real time.",
   "action": {
     "default_popup": "popup.html"
   },
