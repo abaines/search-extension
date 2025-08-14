@@ -32,7 +32,7 @@ https://github.com/abaines/search-extension
 
 ## Single Purpose
 
-Highlight custom words or phrases on any webpage with a simple popup.
+Enhances reading and research efficiency by allowing users to create and persist custom lists of keywords to be automatically highlighted across all browsing sessions.
 
 ## storage justification
 
