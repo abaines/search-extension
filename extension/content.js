@@ -122,23 +122,31 @@
       chrome.runtime.onMessage.addListener(handleHighlightWordsMessage);
 
       function autoApplyFromStorage() {
-            function handleStorageItems(items) {
-                  if (items.autoApply) {
-                        const wordsRaw = items.searchWords || "";
-                        const words = wordsRaw.split("\n").map((w) => w.trim()).filter(Boolean);
-                        highlightKeywords(words);
+            try {
+                  function handleStorageItems(items) {
+                        if (items.autoApply) {
+                              const wordsRaw = items.searchWords || "";
+                              const words = wordsRaw.split("\n").map((w) => w.trim()).filter(Boolean);
+                              highlightKeywords(words);
+                        }
                   }
-            }
-            const isChromeStorageLocalGetAvailable = (
-                  chrome &&
-                  chrome.storage &&
-                  chrome.storage.local &&
-                  typeof chrome.storage.local.get === "function"
-            );
-            if (isChromeStorageLocalGetAvailable) {
-                  chrome.storage.local.get(["autoApply", "searchWords"], handleStorageItems);
-            } else {
-                  console.warn("[content.js] chrome.storage.local.get is not available.");
+                  const isChromeStorageLocalGetAvailable = (
+                        chrome &&
+                        chrome.storage &&
+                        chrome.storage.local &&
+                        typeof chrome.storage.local.get === "function"
+                  );
+                  if (isChromeStorageLocalGetAvailable) {
+                        chrome.storage.local.get(["autoApply", "searchWords"], handleStorageItems);
+                  } else {
+                        console.warn("[content.js] chrome.storage.local.get is not available.");
+                  }
+            } catch (e) {
+                  if (e && e.message && e.message.includes('Extension context invalidated')) {
+                        console.warn('[content.js] Extension context invalidated, ignoring.');
+                  } else {
+                        throw e;
+                  }
             }
       }
 
