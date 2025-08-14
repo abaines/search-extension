@@ -122,13 +122,14 @@
       chrome.runtime.onMessage.addListener(handleHighlightWordsMessage);
 
       function autoApplyFromStorage() {
-            chrome.storage && chrome.storage.local.get(["autoApply", "searchWords"], function (items) {
+            function handleStorageItems(items) {
                   if (items.autoApply) {
                         const wordsRaw = items.searchWords || "";
                         const words = wordsRaw.split("\n").map((w) => w.trim()).filter(Boolean);
                         highlightKeywords(words);
                   }
-            });
+            }
+            chrome.storage && chrome.storage.local.get(["autoApply", "searchWords"], handleStorageItems);
       }
 
       window.addEventListener("focus", autoApplyFromStorage);
