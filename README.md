@@ -14,12 +14,6 @@ OpenHighlighter is a source available tool that quickly auto-highlights multiple
 Chrome Web Store:  
 [OpenHighlighter on chrome web store](https://chromewebstore.google.com/detail/openhighlighter/keflkfcjfkljbafefaemchogmlnanjgi)
 
-## Privacy
-
-All data (search terms, settings, highlights) is stored locally in your browser using Chrome's extension storage APIs.
-No data is sent to any server or leaves your device.
-The extension does not track, transmit, or share your browsing activity or search terms.
-
 ## How It Works
 
 OpenHighlighter consists of:
