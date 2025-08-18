@@ -143,7 +143,7 @@
                   }
             } catch (e) {
                   if (e && e.message && e.message.includes('Extension context invalidated')) {
-                        console.warn('[content.js] Extension context invalidated, ignoring.');
+                        console.log('[content.js] Extension context invalidated, ignoring.');
                   } else {
                         throw e;
                   }
